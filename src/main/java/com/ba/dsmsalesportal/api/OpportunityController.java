@@ -1,5 +1,6 @@
 package com.ba.dsmsalesportal.api;
 
+import com.ba.dsmsalesportal.api.model.BOMItems;
 import com.ba.dsmsalesportal.api.model.BillOfMaterial;
 import com.ba.dsmsalesportal.api.model.Opportunity;
 import com.ba.dsmsalesportal.api.model.Pipeline;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +25,12 @@ public class OpportunityController {
 
     @Autowired
     private Pipeline pipeline;
+
+    @Autowired
+    private BOMItems bomItems;
+
+    @Autowired
+    private BillOfMaterial billOfMaterial;
 
     @GetMapping (value = "/opportunities/{partnerName}")
     public Pipeline getPipelineByPartnerName(@PathVariable("partnerName") String partnerName){
@@ -52,8 +60,14 @@ public class OpportunityController {
 
     // ********************* BILL OF MATERIAL **************
     @GetMapping (value = "/bom/{product}/{size}")
-    public BillOfMaterial getBOM(@PathVariable("product") String product, @PathVariable("size") String size){
-        return  billOfMaterialServiceImpl.findBOMByProductAndSize(product, size);
+    public BOMItems getBOM(@PathVariable("product") String product, @PathVariable("size") String size){
+
+        billOfMaterial =  billOfMaterialServiceImpl.findBOMByProductAndSize(product, size);
+        List<BillOfMaterial> list = new ArrayList<BillOfMaterial>();
+        list.add(billOfMaterial);
+        bomItems.setInstances(list);
+
+        return bomItems;
 
     }
 
